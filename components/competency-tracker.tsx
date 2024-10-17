@@ -24,6 +24,7 @@ interface Activity {
 }
 
 export function CompetencyTrackerComponent() {
+
   const [activities, setActivities] = useState<Activity[]>([
     {
       type: "book",

@@ -8,15 +8,13 @@ import { Lock, LogIn, Mail } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
-export function SignInComponent() {
+type SignInComponentProps = {
+  login: (formData: FormData) => Promise<void>;
+};
+
+export function SignInComponent({ login }: SignInComponentProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle sign-in logic here
-    console.log("Sign in with:", email, password);
-  };
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -55,7 +53,7 @@ export function SignInComponent() {
           >
             Sign In
           </motion.h1>
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form className="space-y-6">
             <motion.div variants={itemVariants}>
               <Label
                 htmlFor="email"
@@ -70,6 +68,7 @@ export function SignInComponent() {
                 <Input
                   type="email"
                   id="email"
+                  name="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="bg-gray-700 border-gray-600 text-white pl-10 focus:ring-blue-500 focus:border-blue-500 block w-full rounded-md"
@@ -92,6 +91,7 @@ export function SignInComponent() {
                 <Input
                   type="password"
                   id="password"
+                  name="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="bg-gray-700 border-gray-600 text-white pl-10 focus:ring-blue-500 focus:border-blue-500 block w-full rounded-md"
@@ -102,7 +102,7 @@ export function SignInComponent() {
             </motion.div>
             <motion.div variants={itemVariants}>
               <Button
-                type="submit"
+                formAction={login}
                 className="w-full bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 focus:ring-offset-blue-200 text-white transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg"
               >
                 Sign In

@@ -1,22 +1,19 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { motion } from "framer-motion"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Mail, Lock, User, ArrowRight } from "lucide-react"
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { motion } from "framer-motion";
+import { ArrowRight, Lock, Mail } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
 
-export function SignUpComponent() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    // Handle sign-up logic here
-    console.log("Sign up with:", email, password)
-  }
+type SignUpComponentProps = {
+  signup: (formData: FormData) => Promise<void>;
+};
+export function SignUpComponent({ signup }: SignUpComponentProps) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -24,18 +21,18 @@ export function SignUpComponent() {
       opacity: 1,
       transition: {
         delayChildren: 0.3,
-        staggerChildren: 0.2
-      }
-    }
-  }
+        staggerChildren: 0.2,
+      },
+    },
+  };
 
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
     visible: {
       y: 0,
-      opacity: 1
-    }
-  }
+      opacity: 1,
+    },
+  };
 
   return (
     <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center p-4">
@@ -55,9 +52,12 @@ export function SignUpComponent() {
           >
             Sign Up
           </motion.h1>
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form className="space-y-6">
             <motion.div variants={itemVariants}>
-              <Label htmlFor="email" className="text-sm font-medium text-gray-300">
+              <Label
+                htmlFor="email"
+                className="text-sm font-medium text-gray-300"
+              >
                 Email
               </Label>
               <div className="mt-1 relative rounded-md shadow-sm">
@@ -67,6 +67,7 @@ export function SignUpComponent() {
                 <Input
                   type="email"
                   id="email"
+                  name="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="bg-gray-700 border-gray-600 text-white pl-10 focus:ring-blue-500 focus:border-blue-500 block w-full rounded-md"
@@ -76,7 +77,10 @@ export function SignUpComponent() {
               </div>
             </motion.div>
             <motion.div variants={itemVariants}>
-              <Label htmlFor="password" className="text-sm font-medium text-gray-300">
+              <Label
+                htmlFor="password"
+                className="text-sm font-medium text-gray-300"
+              >
                 Password
               </Label>
               <div className="mt-1 relative rounded-md shadow-sm">
@@ -86,6 +90,7 @@ export function SignUpComponent() {
                 <Input
                   type="password"
                   id="password"
+                  name="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="bg-gray-700 border-gray-600 text-white pl-10 focus:ring-blue-500 focus:border-blue-500 block w-full rounded-md"
@@ -96,7 +101,7 @@ export function SignUpComponent() {
             </motion.div>
             <motion.div variants={itemVariants}>
               <Button
-                type="submit"
+                formAction={signup}
                 className="w-full bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 focus:ring-offset-blue-200 text-white transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg"
               >
                 Sign Up
@@ -109,7 +114,10 @@ export function SignUpComponent() {
             variants={itemVariants}
           >
             Already have an account?{" "}
-            <Link href="/sign-in" className="font-medium text-blue-400 hover:text-blue-300">
+            <Link
+              href="/sign-in"
+              className="font-medium text-blue-400 hover:text-blue-300"
+            >
               Sign in
             </Link>
           </motion.div>
@@ -117,12 +125,15 @@ export function SignUpComponent() {
             className="mt-2 text-center text-sm"
             variants={itemVariants}
           >
-            <Link href="/forgot-password" className="font-medium text-blue-400 hover:text-blue-300">
+            <Link
+              href="/forgot-password"
+              className="font-medium text-blue-400 hover:text-blue-300"
+            >
               Forgot your password?
             </Link>
           </motion.div>
         </motion.div>
       </motion.div>
     </div>
-  )
+  );
 }
