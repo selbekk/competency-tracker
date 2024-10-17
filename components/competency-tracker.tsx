@@ -1,5 +1,6 @@
 "use client";
 
+import type { Activity } from "@/app/types/activity";
 import { ActivityDetailsModal } from "@/components/activity-details-modal";
 import { ActivityItem } from "@/components/activity-item";
 import { AddActivityForm } from "@/components/add-activity-form";
@@ -16,35 +17,19 @@ import { motion } from "framer-motion";
 import { PlusCircle } from "lucide-react";
 import { useState } from "react";
 
-interface Activity {
-  type: string;
-  title: string;
-  date: string;
-  link?: string;
-}
+type CompetencyTrackerComponentProps = {
+  activities: Activity[];
+};
 
-export function CompetencyTrackerComponent() {
-
-  const [activities, setActivities] = useState<Activity[]>([
-    {
-      type: "book",
-      title: "The Future of AI",
-      date: "2023-06-15",
-      link: "https://example.com/future-ai",
-    },
-    { type: "talk", title: "Quantum Computing Basics", date: "2023-06-10" },
-    {
-      type: "workshop",
-      title: "Advanced Data Visualization",
-      date: "2023-06-05",
-      link: "https://example.com/data-viz",
-    },
-  ]);
-
-  const [newActivity, setNewActivity] = useState<Activity>({
+export function CompetencyTrackerComponent({
+  activities,
+}: CompetencyTrackerComponentProps) {
+  const [, setNewActivity] = useState<Activity>({
+    id: 0,
     type: "book",
     title: "",
-    date: "",
+    description: "",
+    created_at: "",
     link: "",
   });
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -53,28 +38,7 @@ export function CompetencyTrackerComponent() {
   );
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
 
-  const suggestedActivities: Activity[] = [
-    {
-      type: "book",
-      title: "Artificial Intelligence: A Modern Approach",
-      date: "",
-    },
-    { type: "talk", title: "The Impact of Blockchain on Finance", date: "" },
-    { type: "workshop", title: "Machine Learning with TensorFlow", date: "" },
-    {
-      type: "book",
-      title: "Clean Code: A Handbook of Agile Software Craftsmanship",
-      date: "",
-    },
-    { type: "talk", title: "Cybersecurity in the Age of IoT", date: "" },
-  ];
-
-  const addActivity = (e: React.FormEvent) => {
-    e.preventDefault();
-    setActivities([newActivity, ...activities]);
-    setNewActivity({ type: "book", title: "", date: "", link: "" });
-    setIsAddModalOpen(false);
-  };
+  const suggestedActivities: Activity[] = [];
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -111,7 +75,7 @@ export function CompetencyTrackerComponent() {
             className="text-4xl font-bold mb-8 text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600"
             variants={itemVariants}
           >
-            Futuristic Competency Tracker
+            Competency Tracker
           </motion.h1>
 
           <motion.div className="space-y-6" variants={itemVariants}>
@@ -127,19 +91,15 @@ export function CompetencyTrackerComponent() {
                   <DialogHeader>
                     <DialogTitle>Add New Activity</DialogTitle>
                   </DialogHeader>
-                  <AddActivityForm
-                    newActivity={newActivity}
-                    setNewActivity={setNewActivity}
-                    addActivity={addActivity}
-                    setIsAddModalOpen={setIsAddModalOpen}
-                  />
+                  <AddActivityForm setIsAddModalOpen={setIsAddModalOpen} />
                 </DialogContent>
               </Dialog>
             </div>
+
             <motion.div className="space-y-4" variants={containerVariants}>
-              {activities.map((activity, index) => (
+              {activities.map((activity) => (
                 <ActivityItem
-                  key={index}
+                  key={activity.id}
                   activity={activity}
                   onClick={() => {
                     setSelectedActivity(activity);
@@ -175,7 +135,7 @@ export function CompetencyTrackerComponent() {
                   onAddClick={() => {
                     setNewActivity({
                       ...activity,
-                      date: new Date().toISOString().split("T")[0],
+                      created_at: new Date().toISOString().split("T")[0],
                     });
                     setIsAddModalOpen(true);
                   }}

@@ -1,3 +1,4 @@
+import { addActivity } from "@/app/tracker/actions";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
@@ -8,89 +9,62 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
+import { Textarea } from "./ui/textarea";
 
 interface AddActivityFormProps {
-  newActivity: {
-    type: string;
-    title: string;
-    date: string;
-    link?: string;
-  };
-  setNewActivity: React.Dispatch<
-    React.SetStateAction<{
-      type: string;
-      title: string;
-      date: string;
-      link?: string;
-    }>
-  >;
-  addActivity: (e: React.FormEvent) => void;
   setIsAddModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export function AddActivityForm({
-  newActivity,
-  setNewActivity,
-  addActivity,
-  setIsAddModalOpen,
-}: AddActivityFormProps) {
+export function AddActivityForm({ setIsAddModalOpen }: AddActivityFormProps) {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+    const result = await addActivity(formData);
+    if (result.error) {
+      // Handle error (e.g., show an error message)
+      console.error(result.error);
+    } else {
+      // Handle success (e.g., close the modal, show a success message)
+      setIsAddModalOpen(false);
+    }
+  };
   return (
-    <form onSubmit={addActivity} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4">
       <div>
         <Label htmlFor="type">Type</Label>
-        <Select
-          value={newActivity.type}
-          onValueChange={(value) =>
-            setNewActivity({ ...newActivity, type: value })
-          }
-        >
+        <Select name="type">
           <SelectTrigger>
             <SelectValue placeholder="Select activity type" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="book">Book</SelectItem>
             <SelectItem value="talk">Talk</SelectItem>
+            <SelectItem value="video">Video</SelectItem>
             <SelectItem value="workshop">Workshop</SelectItem>
+            <SelectItem value="other">Other</SelectItem>
           </SelectContent>
         </Select>
       </div>
       <div>
         <Label htmlFor="title">Title</Label>
-        <Input
-          id="title"
-          value={newActivity.title}
-          onChange={(e) =>
-            setNewActivity({ ...newActivity, title: e.target.value })
-          }
-          required
-        />
+        <Input id="title" name="title" required />
+      </div>
+      <div>
+        <Label htmlFor="description">Description</Label>
+        <Textarea id="description" name="description" required />
       </div>
       <div>
         <Label htmlFor="date">Date</Label>
-        <Input
-          id="date"
-          type="date"
-          value={newActivity.date}
-          onChange={(e) =>
-            setNewActivity({ ...newActivity, date: e.target.value })
-          }
-          required
-        />
+        <Input id="date" name="date" type="date" required />
       </div>
       <div>
         <Label htmlFor="link">Link (optional)</Label>
-        <Input
-          id="link"
-          value={newActivity.link}
-          onChange={(e) =>
-            setNewActivity({ ...newActivity, link: e.target.value })
-          }
-        />
+        <Input id="link" name="link" />
       </div>
       <div className="flex justify-end space-x-2">
         <Button
           type="button"
-          variant="outline"
+          variant="ghost"
           onClick={() => setIsAddModalOpen(false)}
         >
           Cancel

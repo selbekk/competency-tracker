@@ -10,9 +10,10 @@ interface ActivityDetailsModalProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   activity: {
+    id: number;
     type: string;
     title: string;
-    date: string;
+    created_at: string;
     link?: string;
   } | null;
 }
@@ -38,7 +39,7 @@ export function ActivityDetailsModal({
             <strong>Type:</strong> {activity.type}
           </p>
           <p>
-            <strong>Date:</strong> {activity.date}
+            <strong>Date:</strong> {activity.created_at}
           </p>
           {activity.link && (
             <p>
