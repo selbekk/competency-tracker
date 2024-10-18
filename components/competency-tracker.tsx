@@ -113,9 +113,30 @@ export function CompetencyTrackerComponent({
           <motion.div className="mt-12" variants={itemVariants}>
             <h2 className="text-2xl font-semibold mb-4">Progress Overview</h2>
             <div className="bg-gray-700 bg-opacity-50 p-6 rounded-lg">
-              <ProgressBar label="Books Read" current={5} total={10} />
-              <ProgressBar label="Talks Given" current={3} total={5} />
-              <ProgressBar label="Workshops Attended" current={2} total={8} />
+              <ProgressBar
+                label="Books Read"
+                current={
+                  activities.filter((activity) => activity.type === "book")
+                    .length
+                }
+                total={10}
+              />
+              <ProgressBar
+                label="Talks Seen"
+                current={
+                  activities.filter((activity) => activity.type === "video")
+                    .length
+                }
+                total={5}
+              />
+              <ProgressBar
+                label="Courses Completed"
+                current={
+                  activities.filter((activity) => activity.type === "course")
+                    .length
+                }
+                total={5}
+              />
             </div>
           </motion.div>
 
