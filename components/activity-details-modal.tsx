@@ -1,3 +1,4 @@
+import { Activity } from "@/app/types/activity";
 import {
   Dialog,
   DialogContent,
@@ -9,13 +10,7 @@ import { ActivityIcon } from "./activity-icon";
 interface ActivityDetailsModalProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  activity: {
-    id: number;
-    type: string;
-    title: string;
-    created_at: string;
-    link?: string;
-  } | null;
+  activity: Activity | null;
 }
 
 export function ActivityDetailsModal({
@@ -36,10 +31,14 @@ export function ActivityDetailsModal({
         </DialogHeader>
         <div className="space-y-4">
           <p>
-            <strong>Type:</strong> {activity.type}
+            <strong>Type:</strong> {capitalizeFirstLetter(activity.type)}
           </p>
           <p>
-            <strong>Date:</strong> {activity.created_at}
+            <strong>Description:</strong> {activity.description}
+          </p>
+          <p>
+            <strong>Date:</strong>{" "}
+            {new Date(activity.created_at).toLocaleDateString()}
           </p>
           {activity.link && (
             <p>
@@ -58,4 +57,8 @@ export function ActivityDetailsModal({
       </DialogContent>
     </Dialog>
   );
+}
+
+function capitalizeFirstLetter(str: string) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }
