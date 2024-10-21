@@ -233,10 +233,13 @@ export function CompetencyTrackerComponent({
             {!isGeneratingSuggestions && suggestedActivities.length === 0 && (
               <div className="text-center py-12 mx-auto">
                 <Zap className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                <h3 className="text-xl font-semibold mb-2">
+                <h3 className="text-xl font-semibold mb-4">
                   We don&apos;t have any suggested activities right now.
                 </h3>
-                <Button onClick={generateSuggestions}>
+                <Button
+                  onClick={generateSuggestions}
+                  className="bg-blue-600 hover:bg-blue-700"
+                >
                   Generate Suggestions
                 </Button>
               </div>
