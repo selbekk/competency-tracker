@@ -13,7 +13,7 @@ import { Button } from "./ui/button";
 interface ActivityDetailsModalProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  activity: Activity | null;
+  activity?: Activity | null;
 }
 
 export function ActivityDetailsModal({

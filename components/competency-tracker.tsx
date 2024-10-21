@@ -14,7 +14,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { motion } from "framer-motion";
-import { PlusCircle, Zap } from "lucide-react";
+import { PlusCircle, RefreshCcwIcon, Zap } from "lucide-react";
 import { useState } from "react";
 
 type CompetencyTrackerComponentProps = {
@@ -25,11 +25,43 @@ export function CompetencyTrackerComponent({
   activities,
 }: CompetencyTrackerComponentProps) {
   const [openModal, setOpenModal] = useState<"add" | "details" | null>(null);
-  const [selectedActivity, setSelectedActivity] = useState<Activity | null>(
-    null
+  const [selectedActivity, setSelectedActivity] = useState<
+    Activity | undefined
+  >(undefined);
+  const [suggestedActivities, setSuggestedActivities] = useState<Activity[]>(
+    []
   );
+  const [isGeneratingSuggestions, setIsGeneratingSuggestions] = useState(false);
 
-  const suggestedActivities: Activity[] = [];
+  const generateSuggestions = async () => {
+    setIsGeneratingSuggestions(true);
+    const prompt = `Based on the user's current activities: ${activities
+      .map((a) => a.title)
+      .join(
+        ", "
+      )}, suggest 3 new activities for continued competency development.`;
+
+    try {
+      const response = await fetch("/api/generate-suggestions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to generate suggestions");
+      }
+
+      const data = await response.json();
+      const parsedResult = JSON.parse(data.content);
+      setSuggestedActivities(parsedResult);
+    } catch (error) {
+      console.error("Error generating suggestions:", error);
+      // Handle error (e.g., show an error message to the user)
+    } finally {
+      setIsGeneratingSuggestions(false);
+    }
+  };
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -77,7 +109,10 @@ export function CompetencyTrackerComponent({
                 onOpenChange={(open) => setOpenModal(open ? "add" : null)}
               >
                 <DialogTrigger asChild>
-                  <Button className="bg-blue-600 hover:bg-blue-700">
+                  <Button
+                    className="bg-blue-600 hover:bg-blue-700"
+                    onClick={() => setSelectedActivity(undefined)}
+                  >
                     <PlusCircle className="w-4 h-4 mr-2" /> Add New Activity
                   </Button>
                 </DialogTrigger>
@@ -87,6 +122,7 @@ export function CompetencyTrackerComponent({
                   </DialogHeader>
                   <AddActivityForm
                     setIsAddModalOpen={() => setOpenModal(null)}
+                    prefillActivity={selectedActivity}
                   />
                 </DialogContent>
               </Dialog>
@@ -152,11 +188,11 @@ export function CompetencyTrackerComponent({
                 total={5}
               />
               <ProgressBar
-                label="Courses Completed"
+                label="Podcasts Listened"
                 current={
                   activities.filter(
                     (activity) =>
-                      activity.type === "course" &&
+                      activity.type === "podcast" &&
                       activity.status === "completed"
                   ).length
                 }
@@ -167,32 +203,42 @@ export function CompetencyTrackerComponent({
 
           <motion.div className="mt-12" variants={itemVariants}>
             <h2 className="text-2xl font-semibold mb-4">
-              Suggested Activities
+              Suggested Activities{" "}
+              {suggestedActivities.length > 0 && (
+                <Button onClick={generateSuggestions}>
+                  <RefreshCcwIcon />
+                </Button>
+              )}
             </h2>
-            <motion.div
-              className="grid grid-cols-1 md:grid-cols-2 gap-4"
-              variants={containerVariants}
-            >
-              {suggestedActivities.map((activity, index) => (
-                <ActivityItem
-                  key={index}
-                  activity={activity}
-                  showAddButton
-                  onAddClick={() => {
-                    setOpenModal("add");
-                  }}
-                />
-              ))}
-            </motion.div>
-            {suggestedActivities.length === 0 && (
+            {isGeneratingSuggestions ? (
+              <p className="text-center">Generating suggestions…</p>
+            ) : (
+              <motion.div
+                className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                variants={containerVariants}
+              >
+                {suggestedActivities.map((activity, index) => (
+                  <ActivityItem
+                    key={index}
+                    activity={activity}
+                    showAddButton
+                    onAddClick={() => {
+                      setSelectedActivity(activity);
+                      setOpenModal("add");
+                    }}
+                  />
+                ))}
+              </motion.div>
+            )}
+            {!isGeneratingSuggestions && suggestedActivities.length === 0 && (
               <div className="text-center py-12 mx-auto">
                 <Zap className="mx-auto h-12 w-12 text-gray-400 mb-4" />
                 <h3 className="text-xl font-semibold mb-2">
                   We don&apos;t have any suggested activities right now.
                 </h3>
-                <p className="text-gray-400 mb-4">
-                  Check back later for more suggestions.
-                </p>
+                <Button onClick={generateSuggestions}>
+                  Generate Suggestions
+                </Button>
               </div>
             )}
           </motion.div>

@@ -1,4 +1,5 @@
 import { addActivity } from "@/app/tracker/actions";
+import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
@@ -11,28 +12,72 @@ import {
 } from "./ui/select";
 import { Textarea } from "./ui/textarea";
 
-interface AddActivityFormProps {
-  setIsAddModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+interface ActivityData {
+  type: string;
+  title: string;
+  description: string;
+  status: string;
+  date: string;
+  link: string;
 }
 
-export function AddActivityForm({ setIsAddModalOpen }: AddActivityFormProps) {
-  const handleSubmit = async (e: React.FormEvent) => {
+interface AddActivityFormProps {
+  setIsAddModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  prefillActivity?: Partial<ActivityData>;
+}
+
+export function AddActivityForm({
+  setIsAddModalOpen,
+  prefillActivity,
+}: AddActivityFormProps) {
+  const [formData, setFormData] = useState<ActivityData>({
+    type: "",
+    title: "",
+    description: "",
+    status: "",
+    date: "",
+    link: "",
+  });
+
+  useEffect(() => {
+    if (prefillActivity) {
+      setFormData((prevData) => ({
+        ...prevData,
+        ...prefillActivity,
+      }));
+    }
+  }, [prefillActivity]);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSelectChange = (name: keyof ActivityData) => (value: string) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
-    const result = await addActivity(formData);
+    const result = await addActivity(new FormData(e.currentTarget));
     if (result.error) {
-      // Handle error (e.g., show an error message)
       console.error(result.error);
     } else {
-      // Handle success (e.g., close the modal, show a success message)
       setIsAddModalOpen(false);
     }
   };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
         <Label htmlFor="type">Type</Label>
-        <Select name="type">
+        <Select
+          name="type"
+          value={formData.type}
+          onValueChange={handleSelectChange("type")}
+        >
           <SelectTrigger>
             <SelectValue placeholder="Select activity type" />
           </SelectTrigger>
@@ -48,15 +93,31 @@ export function AddActivityForm({ setIsAddModalOpen }: AddActivityFormProps) {
       </div>
       <div>
         <Label htmlFor="title">Title</Label>
-        <Input id="title" name="title" required />
+        <Input
+          id="title"
+          name="title"
+          value={formData.title}
+          onChange={handleChange}
+          required
+        />
       </div>
       <div>
         <Label htmlFor="description">Description</Label>
-        <Textarea id="description" name="description" required />
+        <Textarea
+          id="description"
+          name="description"
+          value={formData.description}
+          onChange={handleChange}
+          required
+        />
       </div>
       <div>
         <Label htmlFor="progress">Select your progress on this activity</Label>
-        <Select name="status">
+        <Select
+          name="status"
+          value={formData.status}
+          onValueChange={handleSelectChange("status")}
+        >
           <SelectTrigger>
             <SelectValue placeholder="Select progress status" />
           </SelectTrigger>
@@ -67,13 +128,27 @@ export function AddActivityForm({ setIsAddModalOpen }: AddActivityFormProps) {
           </SelectContent>
         </Select>
       </div>
-      <div>
-        <Label htmlFor="date">Date</Label>
-        <Input id="date" name="date" type="date" required />
-      </div>
+      {formData.status === "completed" && (
+        <div>
+          <Label htmlFor="date">Date</Label>
+          <Input
+            id="date"
+            name="date"
+            type="date"
+            value={formData.date}
+            onChange={handleChange}
+            required
+          />
+        </div>
+      )}
       <div>
         <Label htmlFor="link">Link (optional)</Label>
-        <Input id="link" name="link" />
+        <Input
+          id="link"
+          name="link"
+          value={formData.link}
+          onChange={handleChange}
+        />
       </div>
       <div className="flex justify-end space-x-2">
         <Button

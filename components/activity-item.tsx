@@ -30,11 +30,14 @@ export function ActivityItem({
           <div>
             <h3 className="font-semibold">{activity.title}</h3>
             <p className="text-sm text-gray-400">
-              {new Date(activity.created_at).toLocaleDateString()}
+              {activity.created_at &&
+                new Date(activity.created_at).toLocaleDateString()}
             </p>
           </div>
         </div>
-        <StatusBadge status={activity.status} variant="secondary" />
+        {activity.status && (
+          <StatusBadge status={activity.status} variant="secondary" />
+        )}
       </div>
       {showAddButton && (
         <Button
@@ -42,7 +45,7 @@ export function ActivityItem({
             e.stopPropagation();
             onAddClick?.();
           }}
-          className="bg-blue-600 hover:bg-blue-700"
+          className="bg-blue-600 hover:bg-blue-700 ml-4"
         >
           <PlusCircle className="w-4 h-4 mr-2" /> Add
         </Button>

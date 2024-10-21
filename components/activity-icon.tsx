@@ -1,4 +1,11 @@
-import { Book, Mic, Users, Zap } from "lucide-react";
+import {
+  Book,
+  FileText,
+  GraduationCap,
+  Headphones,
+  HelpCircle,
+  Video,
+} from "lucide-react";
 
 interface ActivityIconProps {
   type: string;
@@ -9,11 +16,15 @@ export function ActivityIcon({ type, className }: ActivityIconProps) {
   switch (type) {
     case "book":
       return <Book className={className} />;
-    case "talk":
-      return <Mic className={className} />;
-    case "workshop":
-      return <Users className={className} />;
+    case "video":
+      return <Video className={className} />;
+    case "article":
+      return <FileText className={className} />;
+    case "course":
+      return <GraduationCap className={className} />;
+    case "podcast":
+      return <Headphones className={className} />;
     default:
-      return <Zap className={className} />;
+      return <HelpCircle className={className} />;
   }
 }
