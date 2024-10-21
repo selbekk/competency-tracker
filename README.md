@@ -51,14 +51,6 @@ Competency Tracker is a modern web application designed to help professionals tr
 - [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
 - [Framer Motion](https://www.framer.com/motion/) - Animation library
 
-## Contributing
-
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for more details.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## Acknowledgments
 
 - Geist font by Vercel
