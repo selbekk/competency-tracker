@@ -14,7 +14,7 @@ export async function addActivity(formData: FormData) {
     | "other";
   const link = formData.get("link") as string | null;
 
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { data, error } = await supabase
     .from("activities")

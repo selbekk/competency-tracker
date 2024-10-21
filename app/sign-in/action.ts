@@ -4,9 +4,10 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
+import { getUser } from "@/lib/user";
 
 export async function login(formData: FormData) {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   // type-casting here for convenience
   // in practice, you should validate your inputs
@@ -22,6 +23,16 @@ export async function login(formData: FormData) {
     redirect("/error");
   }
 
+  const user = await getUser();
+  if (!user) {
+    console.error("Could not find the database user");
+    redirect("/error");
+  }
+
+  if (user.first_name === null) {
+    redirect("/profile/welcome");
+  }
+
   revalidatePath("/", "layout");
-  redirect("/");
+  redirect("/tracker");
 }
