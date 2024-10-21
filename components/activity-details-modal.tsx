@@ -1,3 +1,4 @@
+import { changeActivityStatus, deleteActivity } from "@/app/tracker/actions";
 import { Activity } from "@/app/types/activity";
 import {
   Dialog,
@@ -6,6 +7,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { ActivityIcon } from "./activity-icon";
+import { StatusBadge } from "./status-badge";
+import { Button } from "./ui/button";
 
 interface ActivityDetailsModalProps {
   isOpen: boolean;
@@ -18,7 +21,9 @@ export function ActivityDetailsModal({
   onOpenChange,
   activity,
 }: ActivityDetailsModalProps) {
-  if (!activity) return null;
+  if (!activity) {
+    return null;
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -30,12 +35,14 @@ export function ActivityDetailsModal({
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
+          <StatusBadge status={activity.status} />
           <p>
             <strong>Type:</strong> {capitalizeFirstLetter(activity.type)}
           </p>
           <p>
             <strong>Description:</strong> {activity.description}
           </p>
+
           <p>
             <strong>Date:</strong>{" "}
             {new Date(activity.created_at).toLocaleDateString()}
@@ -53,6 +60,30 @@ export function ActivityDetailsModal({
               </a>
             </p>
           )}
+          <div className="flex justify-end gap-4">
+            {activity.status === "not_started" ? (
+              <Button
+                onClick={() => changeActivityStatus(activity.id, "in_progress")}
+              >
+                Mark as In Progress
+              </Button>
+            ) : activity.status === "in_progress" ? (
+              <Button
+                onClick={() => changeActivityStatus(activity.id, "completed")}
+              >
+                Mark as Completed
+              </Button>
+            ) : null}
+            <Button
+              variant="destructive"
+              onClick={() => {
+                deleteActivity(activity.id);
+                onOpenChange(false);
+              }}
+            >
+              Delete
+            </Button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>

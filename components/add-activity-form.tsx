@@ -38,9 +38,10 @@ export function AddActivityForm({ setIsAddModalOpen }: AddActivityFormProps) {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="book">Book</SelectItem>
-            <SelectItem value="talk">Talk</SelectItem>
             <SelectItem value="video">Video</SelectItem>
-            <SelectItem value="workshop">Workshop</SelectItem>
+            <SelectItem value="article">Article</SelectItem>
+            <SelectItem value="course">Course</SelectItem>
+            <SelectItem value="podcast">Podcast</SelectItem>
             <SelectItem value="other">Other</SelectItem>
           </SelectContent>
         </Select>
@@ -52,6 +53,19 @@ export function AddActivityForm({ setIsAddModalOpen }: AddActivityFormProps) {
       <div>
         <Label htmlFor="description">Description</Label>
         <Textarea id="description" name="description" required />
+      </div>
+      <div>
+        <Label htmlFor="progress">Select your progress on this activity</Label>
+        <Select name="status">
+          <SelectTrigger>
+            <SelectValue placeholder="Select progress status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="not_started">I want to do this</SelectItem>
+            <SelectItem value="in_progress">I am doing this</SelectItem>
+            <SelectItem value="completed">I did this already</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
       <div>
         <Label htmlFor="date">Date</Label>

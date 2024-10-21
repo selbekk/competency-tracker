@@ -24,19 +24,10 @@ type CompetencyTrackerComponentProps = {
 export function CompetencyTrackerComponent({
   activities,
 }: CompetencyTrackerComponentProps) {
-  const [, setNewActivity] = useState<Activity>({
-    id: 0,
-    type: "book",
-    title: "",
-    description: "",
-    created_at: "",
-    link: "",
-  });
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [openModal, setOpenModal] = useState<"add" | "details" | null>(null);
   const [selectedActivity, setSelectedActivity] = useState<Activity | null>(
     null
   );
-  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
 
   const suggestedActivities: Activity[] = [];
 
@@ -81,7 +72,10 @@ export function CompetencyTrackerComponent({
           <motion.div className="space-y-6" variants={itemVariants}>
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-semibold">Recent Activities</h2>
-              <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
+              <Dialog
+                open={openModal === "add"}
+                onOpenChange={(open) => setOpenModal(open ? "add" : null)}
+              >
                 <DialogTrigger asChild>
                   <Button className="bg-blue-600 hover:bg-blue-700">
                     <PlusCircle className="w-4 h-4 mr-2" /> Add New Activity
@@ -91,7 +85,9 @@ export function CompetencyTrackerComponent({
                   <DialogHeader>
                     <DialogTitle>Add New Activity</DialogTitle>
                   </DialogHeader>
-                  <AddActivityForm setIsAddModalOpen={setIsAddModalOpen} />
+                  <AddActivityForm
+                    setIsAddModalOpen={() => setOpenModal(null)}
+                  />
                 </DialogContent>
               </Dialog>
             </div>
@@ -103,7 +99,7 @@ export function CompetencyTrackerComponent({
                   activity={activity}
                   onClick={() => {
                     setSelectedActivity(activity);
-                    setIsDetailsModalOpen(true);
+                    setOpenModal("details");
                   }}
                 />
               ))}
@@ -116,7 +112,12 @@ export function CompetencyTrackerComponent({
                   <p className="text-gray-400 mb-4">
                     Start tracking your competencies to see your progress here.
                   </p>
-                  <Button className="bg-blue-600 hover:bg-blue-700">
+                  <Button
+                    className="bg-blue-600 hover:bg-blue-700"
+                    onClick={() => {
+                      setOpenModal("add");
+                    }}
+                  >
                     <PlusCircle className="mr-2 h-5 w-5" />
                     Add New Activity
                   </Button>
@@ -131,24 +132,33 @@ export function CompetencyTrackerComponent({
               <ProgressBar
                 label="Books Read"
                 current={
-                  activities.filter((activity) => activity.type === "book")
-                    .length
+                  activities.filter(
+                    (activity) =>
+                      activity.type === "book" &&
+                      activity.status === "completed"
+                  ).length
                 }
                 total={10}
               />
               <ProgressBar
                 label="Talks Seen"
                 current={
-                  activities.filter((activity) => activity.type === "video")
-                    .length
+                  activities.filter(
+                    (activity) =>
+                      activity.type === "video" &&
+                      activity.status === "completed"
+                  ).length
                 }
                 total={5}
               />
               <ProgressBar
                 label="Courses Completed"
                 current={
-                  activities.filter((activity) => activity.type === "course")
-                    .length
+                  activities.filter(
+                    (activity) =>
+                      activity.type === "course" &&
+                      activity.status === "completed"
+                  ).length
                 }
                 total={5}
               />
@@ -169,11 +179,7 @@ export function CompetencyTrackerComponent({
                   activity={activity}
                   showAddButton
                   onAddClick={() => {
-                    setNewActivity({
-                      ...activity,
-                      created_at: new Date().toISOString().split("T")[0],
-                    });
-                    setIsAddModalOpen(true);
+                    setOpenModal("add");
                   }}
                 />
               ))}
@@ -194,8 +200,8 @@ export function CompetencyTrackerComponent({
       </motion.div>
 
       <ActivityDetailsModal
-        isOpen={isDetailsModalOpen}
-        onOpenChange={setIsDetailsModalOpen}
+        isOpen={openModal === "details"}
+        onOpenChange={(open) => setOpenModal(open ? "details" : null)}
         activity={selectedActivity}
       />
     </motion.div>

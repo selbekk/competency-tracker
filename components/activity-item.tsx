@@ -2,6 +2,7 @@ import { Activity } from "@/app/types/activity";
 import { motion } from "framer-motion";
 import { PlusCircle } from "lucide-react";
 import { ActivityIcon } from "./activity-icon";
+import { StatusBadge } from "./status-badge";
 import { Button } from "./ui/button";
 
 interface ActivityItemProps {
@@ -23,14 +24,17 @@ export function ActivityItem({
       whileHover={{ scale: 1.02 }}
       onClick={onClick}
     >
-      <div className="flex items-center space-x-4">
-        <ActivityIcon type={activity.type} className="w-6 h-6" />
-        <div>
-          <h3 className="font-semibold">{activity.title}</h3>
-          <p className="text-sm text-gray-400">
-            {new Date(activity.created_at).toLocaleDateString()}
-          </p>
+      <div className="flex flex-col items-start justify-between w-full gap-2 sm:flex-row sm:items-center">
+        <div className="flex items-center gap-4">
+          <ActivityIcon type={activity.type} className="w-6 h-6" />
+          <div>
+            <h3 className="font-semibold">{activity.title}</h3>
+            <p className="text-sm text-gray-400">
+              {new Date(activity.created_at).toLocaleDateString()}
+            </p>
+          </div>
         </div>
+        <StatusBadge status={activity.status} variant="secondary" />
       </div>
       {showAddButton && (
         <Button
