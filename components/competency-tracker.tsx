@@ -14,7 +14,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { motion } from "framer-motion";
-import { PlusCircle } from "lucide-react";
+import { PlusCircle, Zap } from "lucide-react";
 import { useState } from "react";
 
 type CompetencyTrackerComponentProps = {
@@ -107,6 +107,21 @@ export function CompetencyTrackerComponent({
                   }}
                 />
               ))}
+              {activities.length === 0 && (
+                <div className="text-center py-12">
+                  <Zap className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                  <h3 className="text-xl font-semibold mb-2">
+                    No activity yet
+                  </h3>
+                  <p className="text-gray-400 mb-4">
+                    Start tracking your competencies to see your progress here.
+                  </p>
+                  <Button className="bg-blue-600 hover:bg-blue-700">
+                    <PlusCircle className="mr-2 h-5 w-5" />
+                    Add New Activity
+                  </Button>
+                </div>
+              )}
             </motion.div>
           </motion.div>
 
@@ -163,6 +178,17 @@ export function CompetencyTrackerComponent({
                 />
               ))}
             </motion.div>
+            {suggestedActivities.length === 0 && (
+              <div className="text-center py-12 mx-auto">
+                <Zap className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                <h3 className="text-xl font-semibold mb-2">
+                  We don&apos;t have any suggested activities right now.
+                </h3>
+                <p className="text-gray-400 mb-4">
+                  Check back later for more suggestions.
+                </p>
+              </div>
+            )}
           </motion.div>
         </div>
       </motion.div>
