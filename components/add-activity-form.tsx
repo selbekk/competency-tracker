@@ -1,5 +1,5 @@
 import { addActivity } from "@/app/tracker/actions";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
@@ -31,22 +31,13 @@ export function AddActivityForm({
   prefillActivity,
 }: AddActivityFormProps) {
   const [formData, setFormData] = useState<ActivityData>({
-    type: "",
-    title: "",
-    description: "",
-    status: "",
-    date: "",
-    link: "",
+    type: prefillActivity?.type || "",
+    title: prefillActivity?.title || "",
+    description: prefillActivity?.description || "",
+    status: prefillActivity?.status || "",
+    date: prefillActivity?.date || "",
+    link: prefillActivity?.link || "",
   });
-
-  useEffect(() => {
-    if (prefillActivity) {
-      setFormData((prevData) => ({
-        ...prevData,
-        ...prefillActivity,
-      }));
-    }
-  }, [prefillActivity]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>

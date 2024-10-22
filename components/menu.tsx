@@ -26,7 +26,7 @@ export function Menu() {
     <>
       <Sheet>
         <SheetTrigger
-          className="fixed top-4 right-4 z-50 p-2"
+          className="absolute top-4 right-4 p-2"
           aria-label="Toggle menu"
         >
           <div className="w-6 h-0.5 bg-white mb-1.5" />
@@ -36,7 +36,9 @@ export function Menu() {
         <SheetContent side="right" className="bg-gray-800 text-white">
           <SheetHeader>
             <SheetTitle className="text-white">Menu</SheetTitle>
-            <SheetDescription>This is the main menu</SheetDescription>
+            <SheetDescription>
+              The main menu of the competency tracker application
+            </SheetDescription>
           </SheetHeader>
           <nav className="mt-6 flex flex-col space-y-4">
             <Link

@@ -3,6 +3,7 @@ import { Activity } from "@/app/types/activity";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -33,14 +34,12 @@ export function ActivityDetailsModal({
             <ActivityIcon type={activity.type} className="w-6 h-6" />
             <span>{activity.title}</span>
           </DialogTitle>
+          <DialogDescription>{activity.description}</DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
           <StatusBadge status={activity.status} />
           <p>
             <strong>Type:</strong> {capitalizeFirstLetter(activity.type)}
-          </p>
-          <p>
-            <strong>Description:</strong> {activity.description}
           </p>
 
           <p>

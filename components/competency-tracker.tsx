@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -40,7 +41,7 @@ export function CompetencyTrackerComponent({
       .map((a) => a.title)
       .join(
         ", "
-      )}, suggest 3 new activities for continued competency development.`;
+      )}, suggest 5 new activities for continued competency development.`;
 
     try {
       const response = await fetch("/api/generate-suggestions", {
@@ -122,6 +123,10 @@ export function CompetencyTrackerComponent({
                   <DialogContent className="bg-gray-800 text-white border-gray-700">
                     <DialogHeader>
                       <DialogTitle>Add New Activity</DialogTitle>
+                      <DialogDescription>
+                        Track a new activity that you want to do, are working
+                        on, or have completed.
+                      </DialogDescription>
                     </DialogHeader>
                     <AddActivityForm
                       setIsAddModalOpen={() => setOpenModal(null)}

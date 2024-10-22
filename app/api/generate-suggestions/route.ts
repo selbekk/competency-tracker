@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getUser } from "@/lib/user";
 import OpenAI from "openai";
 
 const openai = new OpenAI({
@@ -19,17 +20,7 @@ export async function POST(req: Request) {
 
   const supabase = await createClient();
 
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser();
-
-  if (userError) {
-    return new Response(JSON.stringify({ error: "Failed to fetch user" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
+  const user = await getUser();
 
   if (!user) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
@@ -57,6 +48,9 @@ export async function POST(req: Request) {
     );
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { first_name, last_name, ...anonymousUser } = user;
+
   // Include the assessment data in the prompt
   const response = await openai.chat.completions.create({
     model: "gpt-4o",
@@ -65,6 +59,10 @@ export async function POST(req: Request) {
         role: "system",
         content:
           "You are a helpful assistant that generates suggestions for resources and activities to improve your skills. These resources and activities should be related to the user's prompt. The resources and activities should be in the following format: {title: string, description: string, type: string, link: string}. The type should be one of the following: book, video, article, course, podcast. The description should be a short description of the resource or activity that is no longer than 100 characters. The title should be a short title for the resource or activity that is no longer than 50 characters. Ensure that the link actually works. The response should be in JSON format, as a list of resources and activities. Generate at least 4 resources and activities.",
+      },
+      {
+        role: "system",
+        content: "The user's details: " + JSON.stringify(anonymousUser),
       },
       {
         role: "system",
