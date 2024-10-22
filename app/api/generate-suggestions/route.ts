@@ -64,7 +64,7 @@ export async function POST(req: Request) {
       {
         role: "system",
         content:
-          "You are a helpful assistant that generates suggestions for activities to improve your skills. These activities should be related to the user's prompt. The activities should be in the following format: {title: string, description: string, type: string, link: string}. The type should be one of the following: book, video, article, course, podcast. The description should be a short description of the activity that is no longer than 100 characters. The title should be a short title for the activity that is no longer than 50 characters. The response should be in JSON format, as a list of activities.",
+          "You are a helpful assistant that generates suggestions for resources and activities to improve your skills. These resources and activities should be related to the user's prompt. The resources and activities should be in the following format: {title: string, description: string, type: string, link: string}. The type should be one of the following: book, video, article, course, podcast. The description should be a short description of the resource or activity that is no longer than 100 characters. The title should be a short title for the resource or activity that is no longer than 50 characters. Ensure that the link actually works. The response should be in JSON format, as a list of resources and activities. Generate at least 4 resources and activities.",
       },
       {
         role: "system",
