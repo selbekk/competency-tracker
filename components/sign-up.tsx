@@ -4,35 +4,13 @@ import { signup } from "@/app/sign-up/action";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { containerVariants, itemVariants } from "@/lib/animations";
 import { motion } from "framer-motion";
 import { ArrowRight, Loader2, Lock, Mail } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 
 export function SignUpComponent() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        delayChildren: 0.3,
-        staggerChildren: 0.2,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-    },
-  };
-
   const [state, formAction] = useFormState(signup, { success: false });
   const formStatus = useFormStatus();
 
@@ -79,8 +57,6 @@ export function SignUpComponent() {
                       type="email"
                       id="email"
                       name="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
                       className="bg-gray-700 border-gray-600 text-white pl-10 focus:ring-blue-500 focus:border-blue-500 block w-full rounded-md"
                       placeholder="you@example.com"
                       required
@@ -102,20 +78,13 @@ export function SignUpComponent() {
                       type="password"
                       id="password"
                       name="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
                       className="bg-gray-700 border-gray-600 text-white pl-10 focus:ring-blue-500 focus:border-blue-500 block w-full rounded-md"
-                      placeholder="••••••••"
                       required
                     />
                   </div>
                 </motion.div>
                 <motion.div variants={itemVariants}>
-                  <Button
-                    disabled={formStatus.pending}
-                    formAction={formAction}
-                    className="w-full bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 focus:ring-offset-blue-200 text-white transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg"
-                  >
+                  <Button disabled={formStatus.pending} formAction={formAction}>
                     {formStatus.pending ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />

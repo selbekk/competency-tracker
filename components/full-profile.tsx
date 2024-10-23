@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { containerVariants, itemVariants } from "@/lib/animations";
 import { motion } from "framer-motion";
 import { Book, Briefcase, Code, User } from "lucide-react";
 import { Menu } from "./menu";
@@ -22,25 +23,6 @@ type FullProfileComponentProps = {
 };
 
 export function FullProfileComponent({ user }: FullProfileComponentProps) {
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        delayChildren: 0.3,
-        staggerChildren: 0.2,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-    },
-  };
-
   return (
     <div className="min-h-screen bg-gray-900 text-white p-4 sm:p-6 lg:p-8">
       <motion.div
@@ -200,11 +182,7 @@ export function FullProfileComponent({ user }: FullProfileComponentProps) {
               </motion.div>
 
               <motion.div variants={itemVariants} className="flex justify-end">
-                <Button
-                  type="submit"
-                  formAction={saveUserProfile}
-                  className="bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 focus:ring-offset-blue-200"
-                >
+                <Button type="submit" formAction={saveUserProfile}>
                   Save Profile
                 </Button>
               </motion.div>

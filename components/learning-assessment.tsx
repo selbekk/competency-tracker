@@ -13,29 +13,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { containerVariants, itemVariants } from "@/lib/animations";
 import { motion } from "framer-motion";
 import { Brain, Rocket, Target } from "lucide-react";
 
 export function LearningAssessmentComponent() {
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        delayChildren: 0.3,
-        staggerChildren: 0.2,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-    },
-  };
-
   return (
     <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center p-4">
       <motion.div
@@ -112,10 +94,7 @@ export function LearningAssessmentComponent() {
               </motion.div>
 
               <motion.div variants={itemVariants}>
-                <Button
-                  formAction={saveAssessment}
-                  className="w-full bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 focus:ring-offset-blue-200 text-white transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg"
-                >
+                <Button formAction={saveAssessment} className="w-full">
                   Submit Assessment
                 </Button>
               </motion.div>

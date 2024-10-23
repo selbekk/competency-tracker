@@ -3,38 +3,16 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { containerVariants, itemVariants } from "@/lib/animations";
 import { motion } from "framer-motion";
 import { Lock, LogIn, Mail } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
 
 type SignInComponentProps = {
   login: (formData: FormData) => Promise<void>;
 };
 
 export function SignInComponent({ login }: SignInComponentProps) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        delayChildren: 0.3,
-        staggerChildren: 0.2,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-    },
-  };
-
   return (
     <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center p-4">
       <motion.div
@@ -69,8 +47,6 @@ export function SignInComponent({ login }: SignInComponentProps) {
                   type="email"
                   id="email"
                   name="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
                   className="bg-gray-700 border-gray-600 text-white pl-10 focus:ring-blue-500 focus:border-blue-500 block w-full rounded-md"
                   placeholder="you@example.com"
                   required
@@ -92,19 +68,13 @@ export function SignInComponent({ login }: SignInComponentProps) {
                   type="password"
                   id="password"
                   name="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
                   className="bg-gray-700 border-gray-600 text-white pl-10 focus:ring-blue-500 focus:border-blue-500 block w-full rounded-md"
-                  placeholder="••••••••"
                   required
                 />
               </div>
             </motion.div>
             <motion.div variants={itemVariants}>
-              <Button
-                formAction={login}
-                className="w-full bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 focus:ring-offset-blue-200 text-white transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg"
-              >
+              <Button formAction={login} className="w-full">
                 Sign In
                 <LogIn className="ml-2 h-4 w-4" />
               </Button>

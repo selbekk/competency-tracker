@@ -1,4 +1,5 @@
 import { Activity } from "@/app/types/activity";
+import { itemVariants } from "@/lib/animations";
 import { motion } from "framer-motion";
 import { PlusCircle } from "lucide-react";
 import { ActivityIcon } from "./activity-icon";
@@ -22,6 +23,9 @@ export function ActivityItem({
     <motion.div
       className="bg-gray-700 bg-opacity-50 p-4 rounded-lg flex items-center justify-between cursor-pointer hover:bg-opacity-70 transition-all"
       whileHover={{ scale: 1.02 }}
+      variants={itemVariants}
+      initial="hidden"
+      animate="visible"
       onClick={onClick}
     >
       <div className="flex flex-col items-start justify-between w-full gap-2 sm:flex-row sm:items-center">
@@ -45,7 +49,7 @@ export function ActivityItem({
             e.stopPropagation();
             onAddClick?.();
           }}
-          className="bg-blue-600 hover:bg-blue-700 ml-4"
+          className="ml-4"
         >
           <PlusCircle className="w-4 h-4 mr-2" /> Add
         </Button>

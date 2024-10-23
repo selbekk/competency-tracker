@@ -29,9 +29,11 @@ export function Menu() {
           className="absolute top-4 right-4 p-2"
           aria-label="Toggle menu"
         >
-          <div className="w-6 h-0.5 bg-white mb-1.5" />
-          <div className="w-6 h-0.5 bg-white mb-1.5" />
-          <div className="w-6 h-0.5 bg-white" />
+          <div className="flex flex-col gap-1.5">
+            <div className="w-6 h-0.5 bg-white" />
+            <div className="w-6 h-0.5 bg-white" />
+            <div className="w-6 h-0.5 bg-white" />
+          </div>
         </SheetTrigger>
         <SheetContent side="right" className="bg-gray-800 text-white">
           <SheetHeader>

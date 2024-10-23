@@ -15,6 +15,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useSuggestedActivities } from "@/hooks/useSuggestedActivities";
+import { containerVariants, itemVariants } from "@/lib/animations";
 import { motion } from "framer-motion";
 import { PlusCircle, RefreshCcwIcon, Zap } from "lucide-react";
 import { useState } from "react";
@@ -30,59 +32,8 @@ export function CompetencyTrackerComponent({
   const [selectedActivity, setSelectedActivity] = useState<
     Activity | undefined
   >(undefined);
-  const [suggestedActivities, setSuggestedActivities] = useState<Activity[]>(
-    []
-  );
-  const [isGeneratingSuggestions, setIsGeneratingSuggestions] = useState(false);
-
-  const generateSuggestions = async () => {
-    setIsGeneratingSuggestions(true);
-    const prompt = `Based on the user's current activities: ${activities
-      .map((a) => a.title)
-      .join(
-        ", "
-      )}, suggest 5 new activities for continued competency development.`;
-
-    try {
-      const response = await fetch("/api/generate-suggestions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to generate suggestions");
-      }
-
-      const data = await response.json();
-      const parsedResult = JSON.parse(data.content);
-      setSuggestedActivities(parsedResult);
-    } catch (error) {
-      console.error("Error generating suggestions:", error);
-      // Handle error (e.g., show an error message to the user)
-    } finally {
-      setIsGeneratingSuggestions(false);
-    }
-  };
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        delayChildren: 0.3,
-        staggerChildren: 0.2,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-    },
-  };
+  const { suggestedActivities, isGeneratingSuggestions, generateSuggestions } =
+    useSuggestedActivities(activities);
 
   return (
     <>
@@ -113,10 +64,7 @@ export function CompetencyTrackerComponent({
                   onOpenChange={(open) => setOpenModal(open ? "add" : null)}
                 >
                   <DialogTrigger asChild>
-                    <Button
-                      className="bg-blue-600 hover:bg-blue-700"
-                      onClick={() => setSelectedActivity(undefined)}
-                    >
+                    <Button onClick={() => setSelectedActivity(undefined)}>
                       <PlusCircle className="w-4 h-4 mr-2" /> Add New Activity
                     </Button>
                   </DialogTrigger>
@@ -137,16 +85,6 @@ export function CompetencyTrackerComponent({
               </div>
 
               <motion.div className="space-y-4" variants={containerVariants}>
-                {activities.map((activity) => (
-                  <ActivityItem
-                    key={activity.id}
-                    activity={activity}
-                    onClick={() => {
-                      setSelectedActivity(activity);
-                      setOpenModal("details");
-                    }}
-                  />
-                ))}
                 {activities.length === 0 && (
                   <div className="text-center py-12">
                     <Zap className="mx-auto h-12 w-12 text-gray-400 mb-4" />
@@ -158,7 +96,6 @@ export function CompetencyTrackerComponent({
                       here.
                     </p>
                     <Button
-                      className="bg-blue-600 hover:bg-blue-700"
                       onClick={() => {
                         setOpenModal("add");
                       }}
@@ -168,6 +105,18 @@ export function CompetencyTrackerComponent({
                     </Button>
                   </div>
                 )}
+                {activities
+                  .filter((activity) => activity.status !== "completed")
+                  .map((activity) => (
+                    <ActivityItem
+                      key={activity.id}
+                      activity={activity}
+                      onClick={() => {
+                        setSelectedActivity(activity);
+                        setOpenModal("details");
+                      }}
+                    />
+                  ))}
               </motion.div>
             </motion.div>
 
@@ -214,7 +163,7 @@ export function CompetencyTrackerComponent({
               <h2 className="text-2xl font-semibold mb-4">
                 Suggested Activities{" "}
                 {suggestedActivities.length > 0 && (
-                  <Button onClick={generateSuggestions}>
+                  <Button onClick={generateSuggestions} variant="ghost">
                     <RefreshCcwIcon />
                   </Button>
                 )}
@@ -245,10 +194,7 @@ export function CompetencyTrackerComponent({
                   <h3 className="text-xl font-semibold mb-4">
                     We don&apos;t have any suggested activities right now.
                   </h3>
-                  <Button
-                    onClick={generateSuggestions}
-                    className="bg-blue-600 hover:bg-blue-700"
-                  >
+                  <Button onClick={generateSuggestions}>
                     Generate Suggestions
                   </Button>
                 </div>
