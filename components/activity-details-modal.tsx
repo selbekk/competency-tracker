@@ -9,12 +9,33 @@ import {
 } from "@/components/ui/dialog";
 import { ActivityIcon } from "./activity-icon";
 import { StatusBadge } from "./status-badge";
+import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 
 interface ActivityDetailsModalProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   activity?: Activity | null;
+}
+
+function getRelativeTimeInfo(date: Date): {
+  value: number;
+  unit: Intl.RelativeTimeFormatUnit;
+} {
+  const now = new Date();
+  const diffInMinutes = Math.floor(
+    (now.getTime() - date.getTime()) / (1000 * 60)
+  );
+
+  if (diffInMinutes < 60) {
+    return { value: -diffInMinutes, unit: "minutes" };
+  } else if (diffInMinutes < 24 * 60) {
+    return { value: -Math.floor(diffInMinutes / 60), unit: "hours" };
+  } else if (diffInMinutes < 7 * 24 * 60) {
+    return { value: -Math.floor(diffInMinutes / (24 * 60)), unit: "days" };
+  } else {
+    return { value: -Math.floor(diffInMinutes / (7 * 24 * 60)), unit: "weeks" };
+  }
 }
 
 export function ActivityDetailsModal({
@@ -25,6 +46,14 @@ export function ActivityDetailsModal({
   if (!activity) {
     return null;
   }
+
+  const rtf = new Intl.RelativeTimeFormat("en", {
+    numeric: "always",
+    style: "long",
+  });
+
+  const createdAtDate = new Date(activity.created_at);
+  const { value, unit } = getRelativeTimeInfo(createdAtDate);
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -38,13 +67,9 @@ export function ActivityDetailsModal({
         </DialogHeader>
         <div className="space-y-4">
           <StatusBadge status={activity.status} />
+          <Badge variant="gray">{capitalizeFirstLetter(activity.type)}</Badge>
           <p>
-            <strong>Type:</strong> {capitalizeFirstLetter(activity.type)}
-          </p>
-
-          <p>
-            <strong>Date:</strong>{" "}
-            {new Date(activity.created_at).toLocaleDateString()}
+            <strong>Added</strong> {rtf.format(value, unit)}
           </p>
           {activity.link && (
             <p>

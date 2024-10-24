@@ -1,5 +1,6 @@
 "use client";
 
+import { forgotPassword } from "@/app/forgot-password/action";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,19 +8,12 @@ import { containerVariants, itemVariants } from "@/lib/animations";
 import { motion } from "framer-motion";
 import { ArrowRight, Mail } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useFormState, useFormStatus } from "react-dom";
 
 export default function ForgotPassword() {
-  const [email, setEmail] = useState("");
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle password reset request logic here
-    console.log("Password reset requested for:", email);
-  };
-
+  const [state, formAction] = useFormState(forgotPassword, { error: "" });
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center p-4">
+    <div>
       <motion.div
         className="w-full max-w-md"
         initial="hidden"
@@ -34,7 +28,7 @@ export default function ForgotPassword() {
             className="text-4xl font-bold mb-6 text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600"
             variants={itemVariants}
           >
-            Forgot Password
+            Forgot your password?
           </motion.h1>
           <motion.p
             className="text-center text-gray-300 mb-6"
@@ -43,7 +37,7 @@ export default function ForgotPassword() {
             Enter your email address and we&apos;ll send you a link to reset
             your password.
           </motion.p>
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form className="space-y-6" action={formAction}>
             <motion.div variants={itemVariants}>
               <Label
                 htmlFor="email"
@@ -57,20 +51,22 @@ export default function ForgotPassword() {
                 </div>
                 <Input
                   type="email"
+                  name="email"
                   id="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
                   className="bg-gray-700 border-gray-600 text-white pl-10 focus:ring-blue-500 focus:border-blue-500 block w-full rounded-md"
                   placeholder="you@example.com"
                   required
+                  aria-invalid={state.error ? "true" : "false"}
                 />
               </div>
+              {state.error && (
+                <p aria-live="polite" className="text-red-500 text-sm mt-1">
+                  {state.error}
+                </p>
+              )}
             </motion.div>
             <motion.div variants={itemVariants}>
-              <Button type="submit" className="w-full">
-                Reset Password
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
+              <SubmitButton />
             </motion.div>
           </form>
           <motion.div
@@ -88,5 +84,16 @@ export default function ForgotPassword() {
         </motion.div>
       </motion.div>
     </div>
+  );
+}
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button type="submit" className="w-full" disabled={pending}>
+      {pending ? "Resetting..." : "Reset Password"}
+      <ArrowRight className="ml-2 h-4 w-4" />
+    </Button>
   );
 }

@@ -12,9 +12,35 @@ export async function signup(prevState: unknown, formData: FormData) {
   });
 
   if (error || !signUpData.user) {
-    console.log(error);
-    return { success: false };
+    switch (error?.code) {
+      case "weak_password": {
+        return {
+          message: {
+            email: "",
+            password: "Password must be at least 8 characters long.",
+          },
+        };
+      }
+      case "user_already_exists":
+      case "email_exists": {
+        // We pretend the sign up was successful to prevent user enumeration
+        return {
+          message: {
+            email: "",
+            password: "",
+          },
+          success: true,
+        };
+      }
+      default:
+        return {
+          message: {
+            email: "",
+            password: "Something went wrong",
+          },
+        };
+    }
   }
   revalidatePath("/", "layout");
-  return { success: true };
+  return { message: { email: "", password: "" }, success: true };
 }

@@ -9,7 +9,7 @@ import Link from "next/link";
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
+    <div>
       <motion.div
         className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12"
         initial="hidden"
@@ -31,7 +31,7 @@ export default function LandingPage() {
                 <Zap className="ml-2 h-5 w-5" />
               </Link>
             </Button>
-            <Button size="lg" asChild>
+            <Button size="lg" variant="secondary" asChild>
               <Link href="/sign-in">Sign in</Link>
             </Button>
           </div>

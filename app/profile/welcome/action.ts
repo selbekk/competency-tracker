@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { getAuthenticatedUser } from "../../utils/auth";
 
-export async function saveUserProfile(formData: FormData) {
+export async function saveUserProfile(prevState: unknown, formData: FormData) {
   const user = await getAuthenticatedUser();
   const supabase = await createClient();
 
@@ -35,7 +35,7 @@ export async function saveUserProfile(formData: FormData) {
 
     if (error) {
       console.error("Error saving user profile:", error);
-      throw new Error("Failed to save user profile");
+      return { message: "Something went wrong" };
     }
 
     // Check if the user has completed the assessment
@@ -47,7 +47,7 @@ export async function saveUserProfile(formData: FormData) {
 
     if (assessmentError) {
       console.error("Error checking user assessment:", assessmentError);
-      throw new Error("Failed to check user assessment");
+      redirect("/tracker");
     }
 
     if (assessmentData) {
@@ -55,7 +55,7 @@ export async function saveUserProfile(formData: FormData) {
       redirect("/tracker");
     }
 
-    redirect("/learning-assessment");
+    redirect("/learning-goals");
   } catch (error) {
     if (error instanceof z.ZodError) {
       console.error("Validation error:", error.errors);

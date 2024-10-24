@@ -1,6 +1,6 @@
 "use client";
 
-import { saveAssessment } from "@/app/learning-assessment/action";
+import { saveAssessment } from "@/app/learning-goals/action";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,14 +12,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { containerVariants, itemVariants } from "@/lib/animations";
 import { motion } from "framer-motion";
-import { Brain, Rocket, Target } from "lucide-react";
+import { Brain, Target } from "lucide-react";
 
-export function LearningAssessmentComponent() {
+export function LearningGoalsComponent() {
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center p-4">
+    <div>
       <motion.div
         className="w-full max-w-lg"
         initial="hidden"
@@ -29,7 +28,7 @@ export function LearningAssessmentComponent() {
         <Card className="bg-gray-800 bg-opacity-50 backdrop-blur-lg border-gray-700">
           <CardHeader>
             <CardTitle className="text-3xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
-              Learning Assessment
+              Learning goals
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -73,24 +72,6 @@ export function LearningAssessmentComponent() {
                     <SelectItem value="advanced">Advanced</SelectItem>
                   </SelectContent>
                 </Select>
-              </motion.div>
-
-              <motion.div variants={itemVariants}>
-                <Label
-                  htmlFor="challenges"
-                  className="text-lg font-medium text-gray-300 flex items-center"
-                >
-                  <Rocket className="mr-2 h-5 w-5 text-green-400" />
-                  What are you struggling with?
-                </Label>
-                <Textarea
-                  id="challenges"
-                  name="challenges"
-                  className="mt-2 bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Describe any challenges or specific areas you're finding difficult"
-                  rows={4}
-                  required
-                />
               </motion.div>
 
               <motion.div variants={itemVariants}>

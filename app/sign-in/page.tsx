@@ -1,7 +1,6 @@
 import { SignInComponent } from "@/components/sign-in";
 import { createClient } from "@/lib/supabase/client";
 import { redirect } from "next/navigation";
-import { login } from "./action";
 
 export default async function SignInPage() {
   const supabase = createClient();
@@ -9,5 +8,5 @@ export default async function SignInPage() {
   if (data?.user) {
     redirect("/tracker");
   }
-  return <SignInComponent login={login} />;
+  return <SignInComponent />;
 }
